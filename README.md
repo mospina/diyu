@@ -3,10 +3,10 @@
 After installing Postgres, run:
 
 ```
-createuser diyu --pwprompt --superuser
+createuser diyu --pwprompt --superuser --host 0.0.0.0 --port 5432 --user postgres
 # Enter password diyu when prompted
-createdb diyu
-createdb diyu_test
+createdb diyu --host 0.0.0.0 --port 5432 --user diyu
+createdb diyu_test --host 0.0.0.0 --port 5432 --user diyu
 ```
 
 ## Haskell Setup
