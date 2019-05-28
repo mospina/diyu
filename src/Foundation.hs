@@ -7,6 +7,7 @@
 {-# LANGUAGE ExplicitForAll #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE QuasiQuotes #-} -- stext, shamlet
 
 module Foundation where
 
@@ -16,10 +17,18 @@ import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 import Control.Monad.Logger (LogSource)
 
--- Used only when in "auth-dummy-login" setting is enabled.
-import Yesod.Auth.Dummy
+-- Auth
+import Yesod.Auth.Email
+import Text.Blaze.Html.Renderer.Utf8 (renderHtml)
+import Text.Hamlet                   (shamlet)
+import Text.Shakespeare.Text         (stext)
+import Network.Mail.Mime
+import qualified Data.Text.Lazy.Encoding
 
-import Yesod.Auth.OpenId    (authOpenId, IdentifierType (Claimed))
+-- Do I need these two
+import Control.Monad (join)
+import Data.Maybe    (isJust)
+
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
@@ -150,9 +159,7 @@ instance Yesod App where
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
     -- The page to be redirected to when authentication is required.
-    authRoute
-        :: App
-        -> Maybe (Route App)
+    authRoute :: App -> Maybe (Route App)
     authRoute _ = Just $ AuthR LoginR
 
     isAuthorized
@@ -248,19 +255,15 @@ instance YesodAuth App where
     authenticate :: (MonadHandler m, HandlerSite m ~ App)
                  => Creds App -> m (AuthenticationResult App)
     authenticate creds = liftHandler $ runDB $ do
-        x <- getBy $ UniqueUser $ credsIdent creds
-        case x of
-            Just (Entity uid _) -> return $ Authenticated uid
-            Nothing -> Authenticated <$> insert User
-                { userIdent = credsIdent creds
-                , userPassword = Nothing
-                }
+        x <- insertBy $ User (credsIdent creds) Nothing Nothing False
+        return $ Authenticated $
+            case x of
+            Left (Entity userid _) -> userid -- newly added user
+            Right userid -> userid --existing user
 
     -- You can add other plugins like Google Email, email or OAuth here
     authPlugins :: App -> [AuthPlugin App]
-    authPlugins app = [authOpenId Claimed []] ++ extraAuthPlugins
-        -- Enable authDummy login if enabled.
-        where extraAuthPlugins = [authDummy | appAuthDummyLogin $ appSettings app]
+    authPlugins _ = [authEmail]
 
 -- | Access function to determine if a user is logged in.
 isAuthenticated :: Handler AuthResult
@@ -271,6 +274,82 @@ isAuthenticated = do
         Just _ -> Authorized
 
 instance YesodAuthPersist App
+
+-- Here's all of the email-specific code
+instance YesodAuthEmail App where
+    type AuthEmailId App = UserId
+
+    afterPasswordRoute _ = HomeR
+
+    addUnverified email verkey =
+        liftHandler $ runDB $ insert $ User email Nothing (Just verkey) False
+
+    sendVerifyEmail email _ verurl = do
+        -- Print out to the console the verification email, for easier
+        -- debugging.
+        liftIO $ putStrLn $ "Copy/ Paste this URL in your browser:" ++ verurl
+
+        -- Send email.
+        liftIO $ renderSendMail (emptyMail $ Address Nothing "noreply")
+            { mailTo = [Address Nothing email]
+            , mailHeaders =
+                [ ("Subject", "Verify your email address")
+                ]
+            , mailParts = [[textP, htmlP]]
+              -- originally textPart, htmlPart.
+              -- But htmlPart shadows a existing binding. 
+            }
+      where
+        textP = Part
+            { partType = "text/plain; charset=utf-8"
+            , partEncoding = None
+            , partFilename = Nothing
+            , partContent = Data.Text.Lazy.Encoding.encodeUtf8
+                [stext|
+                    Please confirm your email address by clicking on the link below.
+
+                    #{verurl}
+
+                    Thank you
+                |]
+            , partHeaders = []
+            }
+        htmlP = Part
+            { partType = "text/html; charset=utf-8"
+            , partEncoding = None
+            , partFilename = Nothing
+            , partContent = renderHtml
+                [shamlet|
+                    <p>Please confirm your email address by clicking on the link below.
+                    <p>
+                        <a href=#{verurl}>#{verurl}
+                    <p>Thank you
+                |]
+            , partHeaders = []
+            }
+    getVerifyKey = liftHandler . runDB . fmap (join . fmap userVerkey) . get
+    setVerifyKey uid key = liftHandler $ runDB $ update uid [UserVerkey =. Just key]
+    verifyAccount uid = liftHandler $ runDB $ do
+        mu <- get uid
+        case mu of
+            Nothing -> return Nothing
+            Just _ -> do -- originally: Just u, but u is never used.
+                update uid [UserVerified =. True]
+                return $ Just uid
+    getPassword = liftHandler . runDB . fmap (join . fmap userPassword) . get
+    setPassword uid pass = liftHandler . runDB $ update uid [UserPassword =. Just pass]
+    getEmailCreds email = liftHandler $ runDB $ do
+        mu <- getBy $ UniqueUser email
+        case mu of
+            Nothing -> return Nothing
+            Just (Entity uid u) -> return $ Just EmailCreds
+                { emailCredsId = uid
+                , emailCredsAuthId = Just uid
+                , emailCredsStatus = isJust $ userPassword u
+                , emailCredsVerkey = userVerkey u
+                , emailCredsEmail = email
+                }
+    getEmail = liftHandler . runDB . fmap (fmap userEmail) . get
 
 -- This instance is required to use forms. You can modify renderMessage to
 -- achieve customized and internationalized form validation messages.
