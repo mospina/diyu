@@ -24,6 +24,8 @@ import Text.Hamlet                   (shamlet)
 import Text.Shakespeare.Text         (stext)
 import Network.Mail.Mime
 import qualified Data.Text.Lazy.Encoding
+-- Used only when in "auth-dummy-login" setting is enabled.
+import Yesod.Auth.Dummy
 
 -- Do I need these two
 import Control.Monad (join)
@@ -263,7 +265,8 @@ instance YesodAuth App where
 
     -- You can add other plugins like Google Email, email or OAuth here
     authPlugins :: App -> [AuthPlugin App]
-    authPlugins _ = [authEmail]
+    authPlugins app = [authEmail] ++ extraAuthPlugins
+        where extraAuthPlugins = [authDummy | appAuthDummyLogin $ appSettings app]
 
 -- | Access function to determine if a user is logged in.
 isAuthenticated :: Handler AuthResult

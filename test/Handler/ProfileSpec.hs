@@ -25,4 +25,17 @@ spec = withApp $ do
 
             get ProfileR
             let (Entity _ user) = userEntity
-            htmlAnyContain ".username" . unpack $ userIdent user
+            htmlAnyContain ".username" . unpack $ userEmail user
+
+        it "asserts form is processed correctly" $ do
+            userEntity <- createUser "bar"
+            authenticateAs userEntity
+
+            request $ do
+                setMethod "POST"
+                setUrl ProfileR
+                addToken
+                byLabelExact "Profile Name" "foobar"
+
+            statusIs 200
+            htmlAllContain ".upload-response" "foobar"

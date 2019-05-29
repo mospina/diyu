@@ -69,11 +69,12 @@ getTables = do
 -- | Authenticate as a user. This relies on the `auth-dummy-login: true` flag
 -- being set in test-settings.yaml, which enables dummy authentication in
 -- Foundation.hs
+-- I would like to use AuthEmail but I can create the salted password properly
 authenticateAs :: Entity User -> YesodExample App ()
 authenticateAs (Entity _ u) = do
     request $ do
         setMethod "POST"
-        addPostParam "ident" $ userIdent u
+        addPostParam "ident" $ userEmail u
         setUrl $ AuthR $ PluginR "dummy" []
 
 -- | Create a user.  The dummy email entry helps to confirm that foreign-key
@@ -81,12 +82,9 @@ authenticateAs (Entity _ u) = do
 createUser :: Text -> YesodExample App (Entity User)
 createUser ident = runDB $ do
     user <- insertEntity User
-        { userIdent = ident
+        { userEmail = ident
         , userPassword = Nothing
-        }
-    _ <- insert Email
-        { emailEmail = ident
-        , emailUserId = Just $ entityKey user
-        , emailVerkey = Nothing
+        , userVerkey = Nothing
+        , userVerified = True
         }
     return user

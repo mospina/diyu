@@ -5,6 +5,12 @@
 
     <p>
       This page is protected and access is allowed only for authenticated users.
+    
+    <form .form-horizontal method=post action=@{ProfileR}#forms enctype=#{formEnctype}>
+        ^{formWidget}
 
+        <button .btn.btn-primary type="submit">
+            Save!
+          
     <p>
       Your data is protected with us <strong><span class="username">#{userEmail user}</span></strong>!
