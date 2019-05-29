@@ -30,12 +30,13 @@ spec = withApp $ do
         it "asserts form is processed correctly" $ do
             userEntity <- createUser "bar"
             authenticateAs userEntity
+            get ProfileR
 
             request $ do
                 setMethod "POST"
                 setUrl ProfileR
                 addToken
-                byLabelExact "Profile Name" "foobar"
+                byLabelContain "Profile Name" "foobar"
 
             statusIs 200
             htmlAllContain ".upload-response" "foobar"

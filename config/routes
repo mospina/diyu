@@ -11,4 +11,4 @@
 
 /comments CommentR POST
 
-/profile ProfileR GET
+/profile ProfileR GET POST
