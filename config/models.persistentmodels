@@ -9,6 +9,12 @@ User
     UniqueUser email
     deriving Typeable
 
+Profile 
+    name Text
+    userId UserId
+    UniqueName name
+    deriving Typeable
+    
 Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived.
     message Text
     userId UserId Maybe

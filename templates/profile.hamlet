@@ -4,7 +4,7 @@
       ProfileAccess granted!
 
     <p .upload-response>
-      $maybe (Profile name) <- profileName
+      $maybe (Profile name _) <- maybeProfile
         Profile name: <em>#{name}</em>.
 
       $nothing
