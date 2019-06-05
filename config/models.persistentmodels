@@ -13,6 +13,7 @@ Profile
     name Text
     userId UserId
     UniqueName name
+    UniqueUserId userId
     deriving Typeable
     
 Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived.
