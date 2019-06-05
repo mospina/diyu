@@ -260,8 +260,8 @@ instance YesodAuth App where
         x <- insertBy $ User (credsIdent creds) Nothing Nothing False
         return $ Authenticated $
             case x of
-            Left (Entity userid _) -> userid -- newly added user
-            Right userid -> userid --existing user
+                Left (Entity userid _) -> userid -- newly added user
+                Right userid -> userid --existing user
 
     -- You can add other plugins like Google Email, email or OAuth here
     authPlugins :: App -> [AuthPlugin App]
