@@ -34,3 +34,15 @@ postProfileR = do
     defaultLayout $ do
         setTitle . toHtml $ userEmail user <> "'s User page"
         $(widgetFile "profile")
+
+-- return the string before @ of the given email
+getProfileNameFromEmail :: Text -> Text
+getProfileNameFromEmail = takeWhile (/='@')
+
+-- get or create the profile of the given user, and returns it's ID
+getOrCreateProfile :: UserId -> Handler ProfileId
+getOrCreateProfile userId = runDB $ do
+    mProfile <- getBy $ UniqueUserId userId
+    case mProfile of
+        Just (Entity pid _) -> return pid
+        Nothing  -> insert $ Profile "example" userId
