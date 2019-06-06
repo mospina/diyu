@@ -8,6 +8,9 @@ module Handler.Profile where
 import Import
 import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3, bfs)
 
+import System.Random
+import System.IO.Unsafe
+
 -- data Profile = Profile { name :: Text }
 
 profileForm :: UserId -> AForm Handler Profile
@@ -42,7 +45,10 @@ getProfileNameFromEmail = takeWhile (/='@')
 -- get or create the profile of the given user, and returns it's ID
 getOrCreateProfile :: UserId -> Handler ProfileId
 getOrCreateProfile userId = runDB $ do
+    user <- get userId
     mProfile <- getBy $ UniqueUserId userId
     case mProfile of
         Just (Entity pid _) -> return pid
-        Nothing  -> insert $ Profile "example" userId
+        Nothing  -> insert $ Profile (getTempProfile user) userId
+    where getTempProfile (Just u) = getProfileNameFromEmail $ userEmail u
+          getTempProfile Nothing = fromString $ take 10 $ randomRs ('a', 'z') $ unsafePerformIO newStdGen
