@@ -3,6 +3,7 @@
 module Handler.ProfileSpec (spec) where
 
 import TestImport
+import Handler.Profile (getProfileNameFromEmail)
 
 spec :: Spec
 spec = withApp $ do
@@ -20,12 +21,13 @@ spec = withApp $ do
             statusIs 200
 
         it "asserts user's information is shown" $ do
-            userEntity <- createUser "bar"
+            userEntity <- createUser "bar@foo.com"
             authenticateAs userEntity
 
             get ProfileR
             let (Entity _ user) = userEntity
             htmlAnyContain ".username" . unpack $ userEmail user
+            htmlAllContain ".upload-response" "bar"
 
         it "asserts form is processed correctly" $ do
             userEntity <- createUser "bar"
@@ -40,3 +42,9 @@ spec = withApp $ do
 
             statusIs 200
             htmlAllContain ".upload-response" "foobar"
+        
+        it "asserts profile name is given correctly" $
+            let condition = isPrefixOf "foo" $ getProfileNameFromEmail "foo@bar.com"
+            in assertEq "Name of foo@bar.com is foo" condition True
+
+        -- Need assertion for same profile name

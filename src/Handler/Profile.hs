@@ -22,7 +22,8 @@ getProfileR :: Handler Html
 getProfileR = do
     (uid, user) <- requireAuthPair
     (formWidget, formEnctype) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ profileForm uid
-    let maybeProfile = Nothing :: Maybe Profile
+    pid <- getOrCreateProfile uid
+    maybeProfile <- runDB $ get pid
     defaultLayout $ do
         setTitle . toHtml $ userEmail user <> "'s User page"
         $(widgetFile "profile")
@@ -40,7 +41,9 @@ postProfileR = do
 
 -- return the string before @ of the given email
 getProfileNameFromEmail :: Text -> Text
-getProfileNameFromEmail = takeWhile (/='@')
+getProfileNameFromEmail email = fromEmailPart ++ randonPart 
+    where fromEmailPart = takeWhile (/='@') email 
+          randonPart = fromString $ take 10 $ randomRs ('a', 'z') $ unsafePerformIO newStdGen
 
 -- get or create the profile of the given user, and returns it's ID
 getOrCreateProfile :: UserId -> Handler ProfileId
