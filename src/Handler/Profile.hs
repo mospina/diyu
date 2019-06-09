@@ -31,10 +31,13 @@ getProfileR = do
 postProfileR :: Handler Html
 postProfileR = do
     (uid, user) <- requireAuthPair
+    pid <- getOrCreateProfile uid
     ((res, formWidget), formEnctype) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ profileForm uid
-    let maybeProfile = case res of
-            FormSuccess profile -> Just profile
-            _ -> Nothing
+    maybeProfile <- case res of
+            FormSuccess (Profile pName _) -> runDB $ do 
+                update pid [ProfileName =. pName]
+                get pid   
+            _ -> return Nothing
     defaultLayout $ do
         setTitle . toHtml $ userEmail user <> "'s User page"
         $(widgetFile "profile")
