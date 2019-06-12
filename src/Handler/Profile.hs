@@ -15,8 +15,25 @@ import System.IO.Unsafe
 
 profileForm :: UserId -> AForm Handler Profile
 profileForm userId = Profile
-    <$> areq textField (bfs ("Profile Name" :: Text)) Nothing
+    <$> areq uniqueProfileNameField (bfs ("Profile Name" :: Text)) Nothing
     <*> pure userId
+  where
+    errorMessage :: Text
+    errorMessage = "Profile name already used"   
+
+    uniqueProfileNameField = checkM validateUniqueName $ check validateNonReserved textField
+
+    validateNonReserved y
+        | elem y ["profile"] = Left errorMessage
+        | otherwise = Right y
+
+    validateUniqueName :: Text -> Handler (Either Text Text)
+    validateUniqueName y = do 
+        mProfile <- runDB $ getBy $ UniqueName y
+        case mProfile of
+            Just _ -> return $ Left errorMessage
+            Nothing -> return $ Right y
+        
 
 getProfileR :: Handler Html
 getProfileR = do

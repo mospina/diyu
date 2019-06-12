@@ -47,4 +47,42 @@ spec = withApp $ do
             let condition = isPrefixOf "foo" $ getProfileNameFromEmail "foo@bar.com"
             in assertEq "Name of foo@bar.com is foo" condition True
 
-        -- Need assertion for same profile name
+        it "asserts form doesn't accept reserved words" $ do
+            userEntity <- createUser "bar"
+            authenticateAs userEntity
+            get ProfileR
+
+            request $ do
+                setMethod "POST"
+                setUrl ProfileR
+                addToken
+                byLabelContain "Profile Name" "profile"
+
+            statusIs 200
+            htmlAnyContain ".error-block" "already used"
+
+        it "asserts form doesn't accept used profile names" $ do
+            userEntity <- createUser "bar"
+            authenticateAs userEntity
+            get ProfileR
+
+            request $ do
+                setMethod "POST"
+                setUrl ProfileR
+                addToken
+                byLabelContain "Profile Name" "foobar"
+
+            statusIs 200
+
+            anotherUserEntity <- createUser "foo"
+            authenticateAs anotherUserEntity
+            get ProfileR
+
+            request $ do
+                setMethod "POST"
+                setUrl ProfileR
+                addToken
+                byLabelContain "Profile Name" "foobar"
+
+            statusIs 200
+            htmlAnyContain ".error-block" "already used"
