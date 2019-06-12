@@ -86,3 +86,19 @@ spec = withApp $ do
 
             statusIs 200
             htmlAnyContain ".error-block" "already used"
+
+        it "asserts form only accept alphanumeric characters" $ do
+            userEntity <- createUser "bar"
+            authenticateAs userEntity
+            get ProfileR
+
+            request $ do
+                setMethod "POST"
+                setUrl ProfileR
+                addToken
+                byLabelContain "Profile Name" "my site"
+
+            statusIs 200
+            htmlAnyContain ".error-block" "must be alphanumeric"
+
+

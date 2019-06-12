@@ -11,6 +11,8 @@ import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3, bfs)
 import System.Random
 import System.IO.Unsafe
 
+import Data.Char (isAlphaNum)
+
 -- data Profile = Profile { name :: Text }
 
 profileForm :: UserId -> AForm Handler Profile
@@ -21,7 +23,10 @@ profileForm userId = Profile
     errorMessage :: Text
     errorMessage = "Profile name already used"   
 
-    uniqueProfileNameField = checkM validateUniqueName $ check validateNonReserved textField
+    uniqueProfileNameField = 
+        checkM validateUniqueName $ 
+        check validateAlphanum $
+        check validateNonReserved textField
 
     validateNonReserved y
         | elem y ["profile"] = Left errorMessage
@@ -33,8 +38,11 @@ profileForm userId = Profile
         case mProfile of
             Just _ -> return $ Left errorMessage
             Nothing -> return $ Right y
+    
+    validateAlphanum y 
+        | any (not . isAlphaNum) y = Left ("Profile name must be alphanumeric" :: Text)
+        | otherwise = Right y
         
-
 getProfileR :: Handler Html
 getProfileR = do
     (uid, user) <- requireAuthPair
