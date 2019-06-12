@@ -60,7 +60,7 @@ postProfileR = do
     ((res, formWidget), formEnctype) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ profileForm uid
     case res of
         FormSuccess (Profile pName _) -> do 
-            runDB $ update pid [ProfileName =. pName]
+            runDB $ update pid [ProfileName =. (toLower pName)]
             redirect ProfileR
         _ -> do
             maybeProfile <- runDB $ get pid

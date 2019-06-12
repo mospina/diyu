@@ -104,4 +104,18 @@ spec = withApp $ do
             statusIs 200
             htmlAnyContain ".error-block" "must be alphanumeric"
 
+        it "asserts profile name is saved as lower case" $ do
+            userEntity <- createUser "bar"
+            authenticateAs userEntity
+            get ProfileR
 
+            request $ do
+                setMethod "POST"
+                setUrl ProfileR
+                addToken
+                byLabelContain "Profile Name" "FooBar"
+
+            statusIs 303
+            _ <- followRedirect
+
+            htmlAllContain ".upload-response" "foobar"
