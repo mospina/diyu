@@ -40,7 +40,9 @@ spec = withApp $ do
                 addToken
                 byLabelContain "Profile Name" "foobar"
 
-            statusIs 200
+            statusIs 303
+            _ <- followRedirect
+
             htmlAllContain ".upload-response" "foobar"
         
         it "asserts profile name is given correctly" $
@@ -72,7 +74,8 @@ spec = withApp $ do
                 addToken
                 byLabelContain "Profile Name" "foobar"
 
-            statusIs 200
+            statusIs 303
+            _  <- followRedirect
 
             anotherUserEntity <- createUser "foo"
             authenticateAs anotherUserEntity

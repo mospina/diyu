@@ -58,14 +58,15 @@ postProfileR = do
     (uid, user) <- requireAuthPair
     pid <- getOrCreateProfile uid
     ((res, formWidget), formEnctype) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ profileForm uid
-    maybeProfile <- case res of
-            FormSuccess (Profile pName _) -> runDB $ do 
-                update pid [ProfileName =. pName]
-                get pid   
-            _ -> runDB $ get pid
-    defaultLayout $ do
-        setTitle . toHtml $ userEmail user <> "'s User page"
-        $(widgetFile "profile")
+    case res of
+        FormSuccess (Profile pName _) -> do 
+            runDB $ update pid [ProfileName =. pName]
+            redirect ProfileR
+        _ -> do
+            maybeProfile <- runDB $ get pid
+            defaultLayout $ do
+                setTitle . toHtml $ userEmail user <> "'s User page"
+                $(widgetFile "profile")
 
 -- return the string before @ of the given email
 getProfileNameFromEmail :: Text -> Text
