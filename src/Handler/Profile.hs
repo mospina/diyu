@@ -62,7 +62,7 @@ postProfileR = do
             FormSuccess (Profile pName _) -> runDB $ do 
                 update pid [ProfileName =. pName]
                 get pid   
-            _ -> return Nothing
+            _ -> runDB $ get pid
     defaultLayout $ do
         setTitle . toHtml $ userEmail user <> "'s User page"
         $(widgetFile "profile")
