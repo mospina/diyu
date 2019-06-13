@@ -88,3 +88,12 @@ createUser ident = runDB $ do
         , userVerified = True
         }
     return user
+
+createProfile :: (Entity User) -> Text -> YesodExample App (Entity Profile)
+createProfile userEntity profName = runDB $ do
+    let (Entity userId _) = userEntity
+    profile <- insertEntity Profile
+        { profileName = profName
+        , profileUserId = userId
+        }
+    return profile
