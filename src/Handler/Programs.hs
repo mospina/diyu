@@ -1,9 +1,17 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeFamilies #-}
 module Handler.Programs where
 
 import Import
 
 getProgramsR :: Text -> Handler Html
-getProgramsR profileName = error "Not yet implemented: getProgramsR"
+getProgramsR profile = do
+    defaultLayout $ do
+        setTitle . toHtml $ profile
+        $(widgetFile "programs/index")
 
 postProgramsR :: Text -> Handler Html
-postProgramsR profileName = error "Not yet implemented: postProgramsR"
+postProgramsR profile = error "Not yet implemented: postProgramsR"
