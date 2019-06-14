@@ -16,6 +16,15 @@ Profile
     UniqueUserId userId
     deriving Typeable
     
+Program
+    name Text
+    description Text
+    slug Text
+    profileId ProfileId
+    UniqueProgramSlug slug
+    UniqueProfileId profileId
+    deriving Typeable
+
 Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived.
     message Text
     userId UserId Maybe
