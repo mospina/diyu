@@ -29,6 +29,17 @@ spec = withApp $ do
             statusIs 200
             bodyNotContains "form"
 
+        it "asserts full access to users that own the profile" $ do
+            ownerEntity <- createUser "foo"
+            _ <- createProfile ownerEntity "foo"
+            authenticateAs ownerEntity
+
+            get $ ProgramsR "foo"
+
+            statusIs 200
+            bodyContains "form"
+
+
 --    describe "postProgramsR" $ do
 --        error "Spec not implemented: postProgramsR"
 

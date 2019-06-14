@@ -10,7 +10,7 @@ import Import
 getProgramsR :: Text -> Handler Html
 getProgramsR profile = do
     muser <- maybeAuthPair
-    let mProfileOwner = maybeProfileOwner profile muser
+    mProfileOwner <- maybeProfileOwner profile muser
     defaultLayout $ do
         setTitle . toHtml $ profile
         $(widgetFile "programs/index")
@@ -18,6 +18,8 @@ getProgramsR profile = do
 postProgramsR :: Text -> Handler Html
 postProgramsR profile = error "Not yet implemented: postProgramsR"
 
-maybeProfileOwner :: Text -> Maybe (UserId, User) -> Maybe Profile
-maybeProfileOwner _ Nothing = Nothing
-maybeProfileOwner profile (Just (uid, user)) = undefined 
+maybeProfileOwner :: Text -> Maybe (UserId, User) -> Handler (Maybe (Entity Profile))
+maybeProfileOwner profile mUser = do 
+    case mUser of
+        Just (uid, _) -> runDB $ selectFirst [ProfileName ==. profile, ProfileUserId ==. uid] []
+        Nothing -> return Nothing
