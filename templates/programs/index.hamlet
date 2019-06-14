@@ -3,5 +3,6 @@
     <h1>
         Programs
 
-    <form method=post action=#>
+    $maybe (Profile name _) <- mProfileOwner
+        <form method=post action=#>
 
