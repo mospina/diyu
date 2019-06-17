@@ -40,6 +40,20 @@ spec = withApp $ do
             bodyContains "form"
 
 
---    describe "postProgramsR" $ do
---        error "Spec not implemented: postProgramsR"
+    describe "postProgramsR" $ do
+        it "gives unauthorized response to anonymous users" $ do
+            userEntity <- createUser "foo"
+            _ <- createProfile userEntity "foo"
+            post $ ProgramsR "foo"
+            statusIs 403
 
+        it "gives unauthorized response to users that don't own the profile" $ do
+            ownerEntity <- createUser "foo"
+            _ <- createProfile ownerEntity "foo"
+
+            userEntity <- createUser "bar"
+            _ <- createProfile userEntity "bar"
+            authenticateAs userEntity
+
+            post $ ProgramsR "foo"
+            statusIs 403

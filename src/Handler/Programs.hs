@@ -16,7 +16,12 @@ getProgramsR profile = do
         $(widgetFile "programs/index")
 
 postProgramsR :: Text -> Handler Html
-postProgramsR profile = error "Not yet implemented: postProgramsR"
+postProgramsR profile = do
+    userEntity <- requireAuthPair
+    mProfileOwner <- maybeProfileOwner profile (Just userEntity)
+    case mProfileOwner of
+        Just profileOwner -> redirect $ ProgramsR profile
+        Nothing -> permissionDenied "This action is not permitted in this account"
 
 maybeProfileOwner :: Text -> Maybe (UserId, User) -> Handler (Maybe (Entity Profile))
 maybeProfileOwner profile mUser = do 
