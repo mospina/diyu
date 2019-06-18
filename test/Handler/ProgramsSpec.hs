@@ -57,3 +57,20 @@ spec = withApp $ do
 
             post $ ProgramsR "foo"
             statusIs 403
+
+        it "process form properly" $ do
+            userEntity <- createUser "bar"
+            _ <- createProfile userEntity "bar"
+            authenticateAs userEntity
+            get $ ProgramsR "bar"
+            
+            request $ do
+                setMethod "POST"
+                setUrl $ ProgramsR "bar"
+                addToken
+                byLabelContain "Program Name" "Computer Science"
+                byLabelContain "Slug" "computer-science"
+
+            statusIs 303
+                
+            

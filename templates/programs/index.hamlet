@@ -3,6 +3,9 @@
     <h1>
         Programs
 
-    $maybe (Entity pId profile) <- mProfileOwner
-        <form method=post action=#>
-
+    $maybe (Entity _ profile) <- mProfileOwner
+        $maybe (formWidget, formEnctype) <- mForm
+            <form method=post action=@{ProgramsR (profileName profile)} enctype=#{formEnctype}>
+                ^{formWidget}
+            <button .btn.btn-primary type="submit">
+                Save!

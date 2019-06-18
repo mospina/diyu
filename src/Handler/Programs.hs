@@ -6,11 +6,24 @@
 module Handler.Programs where
 
 import Import
+import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3, bfs)
+
+programForm :: ProfileId -> AForm Handler Program
+programForm profileId = Program
+    <$> areq textField (bfs ("Program Name" :: Text)) Nothing
+    <*> aopt textareaField (bfs ("Description" :: Text)) Nothing
+    <*> areq textField (bfs ("Slug" :: Text)) Nothing
+    <*> pure profileId
 
 getProgramsR :: Text -> Handler Html
 getProgramsR profile = do
     muser <- maybeAuthPair
     mProfileOwner <- maybeProfileOwner profile muser
+    mForm <- case mProfileOwner of
+        Just (Entity pid _) -> do
+            form <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ programForm pid
+            return $ Just form
+        Nothing -> return Nothing
     defaultLayout $ do
         setTitle . toHtml $ profile
         $(widgetFile "programs/index")
