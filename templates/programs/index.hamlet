@@ -2,6 +2,16 @@
 
     <h1>
         Programs
+    
+    $if null programs
+        <p>There is not program for this profile
+    $else
+        <div .program-list>
+            $forall Entity _ program <- programs
+                <div .program-item>
+                    <h2>#{programName program}
+                    $maybe description <- programDescription program
+                        <p>#{description}
 
     $maybe (Entity _ profile) <- mProfileOwner
         $maybe (formWidget, formEnctype) <- mForm

@@ -72,5 +72,8 @@ spec = withApp $ do
                 byLabelContain "Slug" "computer-science"
 
             statusIs 303
+            _ <- followRedirect
+
+            htmlAllContain ".program-item" "Computer Science"
                 
             
