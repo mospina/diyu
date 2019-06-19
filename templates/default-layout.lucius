@@ -1,6 +1,6 @@
 .masthead,
 .navbar {
-    background-color: rgb(27, 28, 29);
+    background-color: #8b7d7b;
 }
 
 .navbar-default .navbar-nav > .active > a {
@@ -14,7 +14,7 @@
 
 .masthead {
     margin-top: -21px;
-    color: white;
+    color: #f5fffa;
     text-align: center;
     min-height: 500px;
 }
@@ -70,4 +70,11 @@
 
 #message {
     margin-bottom: 40px;
+}
+
+body {
+    font-family: 'Merriweather', serif;
+    line-height: 1.8;
+    color: #818181;
+    background-color: #f5fffa;
 }

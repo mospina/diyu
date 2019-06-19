@@ -2,15 +2,13 @@
     <div .container>
         <div .row>
             <h1 .header>
-                Yesod—a modern framework for blazing fast websites
+                DIYU by multilada
             <h2>
-                Fast, stable & spiced with great community
-            <a href="http://www.yesodweb.com/book/" .btn.btn-info.btn-lg>
-                Read the Book
+                An application to manage self-learning programs and professional development
 
 <div .container>
     <!-- Starting
-        ================================================== -->
+        ==================================================
     <div .bs-docs-section>
         <div .row>
             <div .col-lg-12>
@@ -56,7 +54,7 @@
     <hr>
 
     <!-- Forms
-        ================================================== -->
+        ==================================================
     <div .bs-docs-section>
         <div .row>
             <div .col-lg-12>
@@ -91,7 +89,7 @@
     <hr>
 
     <!-- JSON
-        ================================================== -->
+        ==================================================
     <div .bs-docs-section>
         <div .row>
             <div .col-lg-12>
@@ -127,7 +125,7 @@
     <hr>
 
     <!-- Testing
-       ================================================== -->
+       ==================================================
     <div .bs-docs-section>
        <div .row>
            <div .col-lg-12>
@@ -139,3 +137,4 @@
                        test suite that performs tests on this page.
                    <p>
                        You can run your tests by doing: <code>stack test</code>
+    -->

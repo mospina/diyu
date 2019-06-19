@@ -1,20 +1,33 @@
 <div .ui.container>
 
     <h1>
-      ProfileAccess granted!
+      Profile
+    
+    <h2>
+      Profile Information
 
     <p .upload-response>
       $maybe (Profile name _) <- maybeProfile
-        Profile name: <em>#{name}</em>.
+        Profile name: <strong><span class="username">#{name}</span></strong>.
 
       $nothing
         Not profile name has been set.
     
-    <form .form-horizontal method=post action=@{ProfileR}#forms enctype=#{formEnctype}>
-        ^{formWidget}
+      <form .form-horizontal method=post action=@{ProfileR}#forms enctype=#{formEnctype}>
+          ^{formWidget}
 
-        <button .btn.btn-primary type="submit">
-            Save!
+          <button .btn.btn-primary type="submit">
+              Save!
           
     <p>
-      Your data is protected with us <strong><span class="username">#{userEmail user}</span></strong>!
+      Email: <strong><span class="username">#{userEmail user}</span></strong>
+
+    <h2>
+      Programs 
+
+    <p>
+      $maybe (Profile name _) <- maybeProfile
+        You can access and add your programs at: <a href="@{ProgramsR name}">Programs</a>.
+
+      $nothing
+        Please set your profile name to have access to your programs
