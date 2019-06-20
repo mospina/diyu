@@ -76,4 +76,79 @@ spec = withApp $ do
 
             htmlAllContain ".program-item" "Computer Science"
                 
+        it "slug is unique for profile" $ do
+            userEntity <- createUser "bar"
+            _ <- createProfile userEntity "bar"
+            authenticateAs userEntity
+            get $ ProgramsR "bar"
             
+            request $ do
+                setMethod "POST"
+                setUrl $ ProgramsR "bar"
+                addToken
+                byLabelContain "Program Name" "Computer Science"
+                byLabelContain "Slug" "computer-science"
+
+            statusIs 303
+
+            get $ ProgramsR "bar"
+            request $ do
+                setMethod "POST"
+                setUrl $ ProgramsR "bar"
+                addToken
+                byLabelContain "Program Name" "Computer Science Two"
+                byLabelContain "Slug" "computer-science"
+
+            statusIs 200
+            htmlAnyContain ".error-block" "already used"
+
+            anotherUserEntity <- createUser "foo"
+            _ <- createProfile anotherUserEntity "foo"
+            authenticateAs anotherUserEntity
+            get $ ProgramsR "foo"
+            
+            request $ do
+                setMethod "POST"
+                setUrl $ ProgramsR "foo"
+                addToken
+                byLabelContain "Program Name" "Computer Science"
+                byLabelContain "Slug" "computer-science"
+
+            statusIs 303
+            _ <- followRedirect
+
+            htmlAllContain ".program-item" "Computer Science"
+
+        it "slug is alphanum" $ do
+            userEntity <- createUser "bar"
+            _ <- createProfile userEntity "bar"
+            authenticateAs userEntity
+            get $ ProgramsR "bar"
+            
+            request $ do
+                setMethod "POST"
+                setUrl $ ProgramsR "bar"
+                addToken
+                byLabelContain "Program Name" "Computer Science"
+                byLabelContain "Slug" "computer science"
+
+            statusIs 200
+            htmlAnyContain ".error-block" "must be alphanumeric"
+
+        it "slug is saved as lowercase" $ do
+            userEntity <- createUser "bar"
+            _ <- createProfile userEntity "bar"
+            authenticateAs userEntity
+            get $ ProgramsR "bar"
+            
+            request $ do
+                setMethod "POST"
+                setUrl $ ProgramsR "bar"
+                addToken
+                byLabelContain "Program Name" "Computer Science"
+                byLabelContain "Slug" "Computer-Science"
+
+            statusIs 303
+            _ <- followRedirect
+
+            htmlAllContain ".program-item" "computer-science"

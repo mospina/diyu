@@ -9,7 +9,11 @@
         <div .program-list>
             $forall Entity _ program <- programs
                 <div .program-item>
-                    <h2>#{programName program}
+                    <h2>
+                        #{programName program}
+                    <p>
+                        #{programSlug program}
+
                     $maybe description <- programDescription program
                         <p>#{description}
 

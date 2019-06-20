@@ -8,12 +8,35 @@ module Handler.Programs where
 import Import
 import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3, bfs)
 
+import Data.Char (isAlphaNum)
+
 programForm :: ProfileId -> AForm Handler Program
 programForm profileId = Program
     <$> areq textField (bfs ("Program Name" :: Text)) Nothing
     <*> aopt textareaField (bfs ("Description" :: Text)) Nothing
-    <*> areq textField (bfs ("Slug" :: Text)) Nothing
+    <*> areq uniqueSlugField (bfs ("Slug" :: Text)) Nothing
     <*> pure profileId
+  where
+    errorMessage :: Text
+    errorMessage = "Slug already used"
+
+    uniqueSlugField = 
+        checkM validateUniqueSlug $
+        check validateAlphanum textField   
+
+    validateUniqueSlug :: Text -> Handler (Either Text Text)
+    validateUniqueSlug y = do 
+        mProgram <- runDB $ selectFirst [ProgramProfileId ==. profileId, ProgramSlug ==. y] []
+        case mProgram of
+            Just _ -> return $ Left errorMessage
+            Nothing -> return $ Right y
+
+    validateAlphanum y 
+        | any (not . isSlug) y = Left ("Profile name must be alphanumeric" :: Text)
+        | otherwise = Right $ toLower y
+
+    isSlug :: Char -> Bool
+    isSlug c = (isAlphaNum c) || (c `elem` ("-_" :: String))
 
 getProgramsR :: Text -> Handler Html
 getProgramsR profile = do
