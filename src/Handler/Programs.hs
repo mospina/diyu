@@ -32,7 +32,7 @@ programForm profileId = Program
             Nothing -> return $ Right y
 
     validateAlphanum y 
-        | any (not . isSlug) y = Left ("Profile name must be alphanumeric" :: Text)
+        | any (not . isSlug) y = Left ("Slug must be alphanumeric" :: Text)
         | otherwise = Right $ toLower y
 
     isSlug :: Char -> Bool
