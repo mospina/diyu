@@ -79,6 +79,14 @@ postProgramsR profile = do
                          $(widgetFile "programs/index")
         Nothing -> permissionDenied "This action is not permitted in this account"
 
+getProgramR :: Text -> Text -> Handler Html
+getProgramR profile programSlug = do
+    muser <- maybeAuthPair
+    mProfileOwner <- maybeProfileOwner profile muser
+    defaultLayout $ do
+        setTitle . toHtml $ programSlug
+        $(widgetFile "programs/show")
+
 maybeProfileOwner :: Text -> Maybe (UserId, User) -> Handler (Maybe (Entity Profile))
 maybeProfileOwner profile mUser = do 
     case mUser of

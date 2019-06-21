@@ -157,8 +157,34 @@ spec = withApp $ do
         it "asserts limited access to anonymous users" $ do
             userEntity <- createUser "foo"
             profileEntity <- createProfile userEntity "foo"
-            programEntiry <- createProgram profileEntity "Computer Science" "computer-science"
+            _ <- createProgram profileEntity "Computer Science" "computer-science"
             get $ ProgramR "foo" "computer-science"
 
             statusIs 200
             bodyNotContains "form"
+
+        it "asserts limited access to users that don't own the profile" $ do
+            ownerEntity <- createUser "foo"
+            ownerProfile <- createProfile ownerEntity "foo"
+            _ <- createProgram ownerProfile "Computer Science" "computer-science"
+
+            userEntity <- createUser "bar"
+            profileEntity <- createProfile userEntity "bar"
+            _ <- createProgram profileEntity "Computer Science" "computer-science"
+            authenticateAs userEntity
+
+            get $ ProgramR "foo" "computer-science"
+
+            statusIs 200
+            bodyNotContains "form"
+
+        it "asserts full access to users that own the profile" $ do
+            ownerEntity <- createUser "foo"
+            ownerProfile <- createProfile ownerEntity "foo"
+            _ <- createProgram ownerProfile "Computer Science" "computer-science"
+            authenticateAs ownerEntity
+
+            get $ ProgramR "foo" "computer-science"
+
+            statusIs 200
+            bodyContains "form"

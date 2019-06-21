@@ -12,4 +12,5 @@
 /comments CommentR POST
 
 /profile ProfileR GET POST
-!/#Text ProgramsR GET POST
+!/#Text ProgramsR GET POST -- /profileName
+!/#Text/#Text ProgramR GET -- /profileName/programSlug
