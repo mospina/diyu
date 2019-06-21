@@ -152,3 +152,13 @@ spec = withApp $ do
             _ <- followRedirect
 
             htmlAllContain ".program-item" "computer-science"
+
+    describe "getProgramR" $ do
+        it "asserts limited access to anonymous users" $ do
+            userEntity <- createUser "foo"
+            profileEntity <- createProfile userEntity "foo"
+            programEntiry <- createProgram profileEntity "Computer Science" "computer-science"
+            get $ ProgramR "foo" "computer-science"
+
+            statusIs 200
+            bodyNotContains "form"

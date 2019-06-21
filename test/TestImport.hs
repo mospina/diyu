@@ -97,3 +97,14 @@ createProfile userEntity profName = runDB $ do
         , profileUserId = userId
         }
     return profile
+
+createProgram :: (Entity Profile) -> Text -> Text -> YesodExample App (Entity Program)
+createProgram profileEntity name slug = runDB $ do
+    let (Entity profileId _) = profileEntity
+    program <- insertEntity Program
+        { programName = name
+        , programSlug = slug
+        , programDescription = Nothing
+        , programProfileId = profileId
+        }
+    return program  
