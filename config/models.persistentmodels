@@ -23,6 +23,14 @@ Program
     profileId ProfileId
     deriving Typeable
 
+Course
+  name Text
+  description Textarea Maybe
+  slug Text
+  programID ProgramId
+  profileId ProfileId
+  deriving Typeable
+
 Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived.
     message Text
     userId UserId Maybe
