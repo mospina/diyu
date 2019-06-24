@@ -13,4 +13,4 @@
 
 /profile ProfileR GET POST
 !/#Text ProgramsR GET POST -- /profileName
-!/#Text/#Text ProgramR GET -- /profileName/programSlug
+!/#Text/#Text ProgramR GET POST -- /profileName/programSlug

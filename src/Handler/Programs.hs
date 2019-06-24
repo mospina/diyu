@@ -87,6 +87,17 @@ getProgramR profile programSlug = do
         setTitle . toHtml $ programSlug
         $(widgetFile "programs/show")
 
+postProgramR :: Text -> Text -> Handler Html
+postProgramR profile programSlug = do
+    muser <- maybeAuthPair
+    mProfileOwner <- maybeProfileOwner profile muser
+    case mProfileOwner of
+        Just (Entity pid _) -> do
+            defaultLayout $ do
+                setTitle . toHtml $ programSlug
+                $(widgetFile "programs/show")
+        Nothing -> permissionDenied "This action is not permitted in this account"
+
 maybeProfileOwner :: Text -> Maybe (UserId, User) -> Handler (Maybe (Entity Profile))
 maybeProfileOwner profile mUser = do 
     case mUser of

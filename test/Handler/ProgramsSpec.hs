@@ -188,3 +188,44 @@ spec = withApp $ do
 
             statusIs 200
             bodyContains "form"
+
+    describe "postProgramR" $ do
+        it "gives unauthorized response to anonymous users" $ do
+            userEntity <- createUser "foo"
+            profileEntity <- createProfile userEntity "foo"
+            _ <- createProgram profileEntity "Computer Science" "computer-science"
+            post $ ProgramR "foo" "computer-science"
+
+            statusIs 403
+
+        it "gives unauthorized response to users that don't own the profile" $ do
+            ownerEntity <- createUser "foo"
+            ownerProfile <- createProfile ownerEntity "foo"
+            _ <- createProgram ownerProfile "Computer Science" "computer-science"
+
+            userEntity <- createUser "bar"
+            profileEntity <- createProfile userEntity "bar"
+            _ <- createProgram profileEntity "Computer Science" "computer-science"
+            authenticateAs userEntity
+
+            post $ ProgramR "foo" "computer-science"
+            statusIs 403
+
+--        it "process form properly" $ do
+--            userEntity <- createUser "bar"
+--            profileEntity <- createProfile userEntity "bar"
+--            _ <- createProgram profileEntity "Computer Science" "computer-science"
+--            authenticateAs userEntity
+--            get $ ProgramR "bar" "computer-science"
+--            
+--            request $ do
+--                setMethod "POST"
+--                setUrl $ ProgramR "bar" "computer-science"    
+--                addToken
+--                byLabelContain "Course Name" "How to Code I"
+--                byLabelContain "Slug" "how-to-code-1"
+--
+--            statusIs 303
+--            _ <- followRedirect
+--
+--            htmlAllContain ".course-item" "How to Code I"
