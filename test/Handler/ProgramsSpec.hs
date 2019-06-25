@@ -211,21 +211,21 @@ spec = withApp $ do
             post $ ProgramR "foo" "computer-science"
             statusIs 403
 
---        it "process form properly" $ do
---            userEntity <- createUser "bar"
---            profileEntity <- createProfile userEntity "bar"
---            _ <- createProgram profileEntity "Computer Science" "computer-science"
---            authenticateAs userEntity
---            get $ ProgramR "bar" "computer-science"
---            
---            request $ do
---                setMethod "POST"
---                setUrl $ ProgramR "bar" "computer-science"    
---                addToken
---                byLabelContain "Course Name" "How to Code I"
---                byLabelContain "Slug" "how-to-code-1"
---
---            statusIs 303
---            _ <- followRedirect
---
---            htmlAllContain ".course-item" "How to Code I"
+        it "process form properly" $ do
+            userEntity <- createUser "bar"
+            profileEntity <- createProfile userEntity "bar"
+            _ <- createProgram profileEntity "Computer Science" "computer-science"
+            authenticateAs userEntity
+            get $ ProgramR "bar" "computer-science"
+            
+            request $ do
+                setMethod "POST"
+                setUrl $ ProgramR "bar" "computer-science"    
+                addToken
+                byLabelContain "Course Name" "How to Code I"
+                byLabelContain "Slug" "how-to-code-1"
+
+            statusIs 303
+            _ <- followRedirect
+
+            htmlAllContain ".course-item" "How to Code I"

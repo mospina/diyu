@@ -2,6 +2,24 @@
 
     <h1>
         Program
+
+    $if null courses
+        <p>There is not courses for this program
+    $else
+        <div .course-list>
+            $forall Entity _ course <- courses
+                <div .course-item>
+                    <h2>
+                        #{courseName course}
+                    <p>
+                        #{courseSlug course}
+
+                    $maybe description <- courseDescription course
+                        <p>#{description}
     
     $maybe (Entity _ profile) <- mProfileOwner
-        <form method=post>
+        $maybe (formWidget, formEnctype) <- mForm
+            <form method=post action=@{ProgramR (profileName profile) progSlug} enctype=#{formEnctype}>
+                ^{formWidget}
+            <button .btn.btn-primary type="submit">
+                Save!
