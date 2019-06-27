@@ -18,6 +18,7 @@ import Yesod.Default.Config2 (useEnv, loadYamlSettings)
 import Yesod.Auth            as X
 import Yesod.Test            as X
 import Yesod.Core.Unsafe     (fakeHandlerGetLogger)
+import Progress
 
 runDB :: SqlPersistM a -> YesodExample App a
 runDB query = do
@@ -108,3 +109,17 @@ createProgram profileEntity name slug = runDB $ do
         , programProfileId = profileId
         }
     return program  
+
+createCourse :: (Entity Program) -> Text -> Text -> Progress -> YesodExample App (Entity Course)
+createCourse progEntity name slug progress = runDB $ do
+    let (Entity progId program) = progEntity
+    course <- insertEntity Course
+        { courseName = name
+        , courseSlug = slug
+        , courseProgress = progress
+        , courseDescription = Nothing
+        , courseUrl = Nothing
+        , courseProgramId = progId
+        , courseProfileId = programProfileId program
+        }
+    return course  

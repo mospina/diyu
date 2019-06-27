@@ -3,6 +3,7 @@
 module Handler.ProgramsSpec (spec) where
 
 import TestImport
+import Progress
 
 spec :: Spec
 spec = withApp $ do
@@ -232,3 +233,19 @@ spec = withApp $ do
 
             statusIs 200
             htmlAllContain ".course-item" "How to Code I"
+
+    describe "templates/programs/show" $ do 
+        it "organize courses by progress" $ do
+            userEntity <- createUser "bar"
+            profileEntity <- createProfile userEntity "bar"
+            programEntity <- createProgram profileEntity "Computer Science" "computer-science"
+            _todoCourse <- createCourse programEntity "How to Code" "how-to-code" Todo
+            _doingCourse <- createCourse programEntity "Programming Languages" "programming-languages" Doing
+            _doneCourse <- createCourse programEntity "Intro to Programming" "intro-programming" Done
+            authenticateAs userEntity
+            get $ ProgramR "bar" "computer-science"
+            
+            statusIs 200
+            htmlAllContain ".todo" "How to Code"
+            htmlAllContain ".doing" "Programming Languages"
+            htmlAllContain ".done" "Intro to Programming"

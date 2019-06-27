@@ -7,19 +7,48 @@
         <p>There is not courses for this program
     $else
         <div .course-list>
-            $forall Entity _ course <- courses
-                <div .course-item>
-                    <h2>
-                        #{courseName course}
-                    <p>
-                        #{courseSlug course}
+            <div .todo>
+                $forall Entity _ course <- filterCourses courses Todo
+                    <div .course-item>
+                        <h2>
+                            #{courseName course}
+                        <p>
+                            #{courseSlug course}
 
-                    $maybe url <- courseUrl course
-                        <p>#{url}
+                        $maybe url <- courseUrl course
+                            <p>#{url}
 
-                    $maybe description <- courseDescription course
-                        <p>#{description}
-    
+                        $maybe description <- courseDescription course
+                            <p>#{description}
+
+            <div .doing>
+                $forall Entity _ course <- filterCourses courses Doing
+                    <div .course-item>
+                        <h2>
+                            #{courseName course}
+                        <p>
+                            #{courseSlug course}
+
+                        $maybe url <- courseUrl course
+                            <p>#{url}
+
+                        $maybe description <- courseDescription course
+                            <p>#{description}
+
+            <div .done>
+                $forall Entity _ course <- filterCourses courses Done
+                    <div .course-item>
+                        <h2>
+                            #{courseName course}
+                        <p>
+                            #{courseSlug course}
+
+                        $maybe url <- courseUrl course
+                            <p>#{url}
+
+                        $maybe description <- courseDescription course
+                            <p>#{description}
+
     $maybe (Entity _ profile) <- mProfileOwner
         $maybe (formWidget, formEnctype) <- mForm
             <form method=post action=@{ProgramR (profileName profile) progSlug} enctype=#{formEnctype}>

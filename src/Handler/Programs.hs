@@ -172,3 +172,6 @@ maybeProgram profName progSlug = runDB $ do
     case mProfile of
         Just (Entity pId _) -> selectFirst [ProgramProfileId ==. pId, ProgramSlug ==. progSlug] []
         Nothing -> return Nothing
+
+filterCourses :: (IsSequence seq, Element seq ~ Entity Course) => seq -> Progress -> seq
+filterCourses courses progress = filter (\(Entity _ course)-> courseProgress course == progress) courses
