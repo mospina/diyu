@@ -224,8 +224,11 @@ spec = withApp $ do
                 addToken
                 byLabelContain "Course Name" "How to Code I"
                 byLabelContain "Slug" "how-to-code-1"
+                byLabelContain "Url" "https://courses.edx.org/courses/how-code"
+                byLabelContain "Progress" "2" -- In the form, return values are numeric
 
             statusIs 303
             _ <- followRedirect
 
+            statusIs 200
             htmlAllContain ".course-item" "How to Code I"

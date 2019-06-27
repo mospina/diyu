@@ -9,7 +9,7 @@ import Import
 import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3, bfs)
 
 import Data.Char (isAlphaNum)
-
+import Progress
 --------------------------------------------------------------------------------
 programForm :: ProfileId -> AForm Handler Program
 programForm profileId = Program
@@ -44,6 +44,8 @@ courseForm profileId programId = Course
     <$> areq textField (bfs ("Course Name" :: Text)) Nothing
     <*> aopt textareaField (bfs ("Description" :: Text)) Nothing
     <*> areq uniqueSlugField (bfs ("Slug" :: Text)) Nothing
+    <*> aopt urlField (bfs ("Url" :: Text)) Nothing
+    <*> areq (selectFieldList progress) (bfs ("Progress" :: Text)) (Just Todo)
     <*> pure programId
     <*> pure profileId
   where
@@ -67,6 +69,9 @@ courseForm profileId programId = Course
 
     isSlug :: Char -> Bool
     isSlug c = (isAlphaNum c) || (c `elem` ("-_" :: String))
+
+    progress :: [(Text, Progress)]
+    progress = [("Todo", Todo), ("Doing", Doing), ("Done", Done)]
 
 --------------------------------------------------------------------------------
 getProgramsR :: Text -> Handler Html

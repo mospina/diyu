@@ -27,6 +27,8 @@ Course
     name Text
     description Textarea Maybe
     slug Text
+    url Text Maybe
+    progress Progress
     programId ProgramId
     profileId ProfileId
     deriving Typeable
