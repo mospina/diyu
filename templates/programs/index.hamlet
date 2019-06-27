@@ -12,7 +12,8 @@
                     <h2>
                         #{programName program}
                     <p>
-                        #{programSlug program}
+                        <a href="@{ProgramR profile (programSlug program)}">
+                            See program
 
                     $maybe description <- programDescription program
                         <p>#{description}
@@ -21,5 +22,5 @@
         $maybe (formWidget, formEnctype) <- mForm
             <form method=post action=@{ProgramsR (profileName profile)} enctype=#{formEnctype}>
                 ^{formWidget}
-            <button .btn.btn-primary type="submit">
-                Save!
+                <button .btn.btn-primary type="submit">
+                    Save!
