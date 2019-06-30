@@ -14,3 +14,4 @@
 /profile ProfileR GET POST
 !/#Text ProgramsR GET POST -- /profileName
 !/#Text/#Text ProgramR GET POST -- /profileName/programSlug
+/#Text/#Text/#Text CourseR GET POST
