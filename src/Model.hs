@@ -11,6 +11,8 @@ module Model where
 
 import ClassyPrelude.Yesod
 import Database.Persist.Quasi
+import Text.Markdown (Markdown)
+import Yesod.Text.Markdown ()
 
 import Progress
 

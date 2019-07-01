@@ -123,3 +123,15 @@ createCourse progEntity name slug progress = runDB $ do
         , courseProfileId = programProfileId program
         }
     return course  
+
+createArticle :: (Entity Course) -> Text -> Text -> YesodExample App (Entity Article)
+createArticle courseEntity title slug = runDB $ do
+    let (Entity cId course) = courseEntity
+    article <- insertEntity Article
+        { articleTitle = title
+        , articleSlug = slug
+        , articleBody = "# Markdown text"
+        , articleCourseId = cId
+        , articleProfileId = courseProfileId course
+        }
+    return article

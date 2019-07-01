@@ -33,6 +33,14 @@ Course
     profileId ProfileId
     deriving Typeable
 
+Article
+    title Text
+    slug Text
+    body Markdown
+    courseId CourseId
+    profileId ProfileId
+    deriving Typeable
+
 Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived.
     message Text
     userId UserId Maybe
