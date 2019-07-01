@@ -1,0 +1,13 @@
+<div .ui.container>
+    <h1>Course
+
+    <!-- Private -->   
+    $maybe (Entity _ profile) <- mProfileOwner
+        <form method=post>
+    <!-- form
+        $maybe (formWidget, formEnctype) <- mForm
+            <form method=post action=@{ProgramR (profileName profile) progSlug} enctype=#{formEnctype}>
+                ^{formWidget}
+                <button .btn.btn-primary type="submit">
+                    Save!
+    -->
