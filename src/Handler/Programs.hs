@@ -10,7 +10,9 @@ import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3, bfs)
 
 import Data.Char (isAlphaNum)
 import Progress
+
 --------------------------------------------------------------------------------
+
 programForm :: ProfileId -> AForm Handler Program
 programForm profileId = Program
     <$> areq textField (bfs ("Program Name" :: Text)) Nothing
