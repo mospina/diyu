@@ -13,7 +13,8 @@
                         <h2>
                             #{courseName course}
                         <p>
-                            #{courseSlug course}
+                            <a href="@{CourseR profile progSlug (courseSlug course)}">
+                                See course
 
                         $maybe url <- courseUrl course
                             <p>#{url}
@@ -27,7 +28,8 @@
                         <h2>
                             #{courseName course}
                         <p>
-                            #{courseSlug course}
+                            <a href="@{CourseR profile progSlug (courseSlug course)}">
+                                See course
 
                         $maybe url <- courseUrl course
                             <p>#{url}
@@ -41,7 +43,8 @@
                         <h2>
                             #{courseName course}
                         <p>
-                            #{courseSlug course}
+                            <a href="@{CourseR profile progSlug (courseSlug course)}">
+                                See course
 
                         $maybe url <- courseUrl course
                             <p>#{url}

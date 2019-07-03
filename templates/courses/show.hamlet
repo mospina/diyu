@@ -1,6 +1,15 @@
 <div .ui.container>
     <h1>Course
 
+    $if null articles
+        <p>There is no articles for this course.
+    $else
+        <div .article-list>
+            $forall Entity _ article <- articles
+                <div .article-item>
+                    <h2>#{articleTitle article}
+                        <p>#{articleSlug article}
+                        
     <!-- Private -->   
     $maybe (Entity _ profile) <- mProfileOwner
         $maybe (formWidget, formEnctype) <- mForm

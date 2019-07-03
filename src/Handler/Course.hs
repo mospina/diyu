@@ -52,6 +52,7 @@ getCourseR profName progSlug course = do
     cId <- case mCourse of
         Just (Entity cId _) -> return cId
         Nothing -> notFound
+    articles <- runDB $ selectList [ArticleCourseId ==. cId] []
     mForm <- case mProfileOwner of 
         Just (Entity profId _) -> do
             form <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ articleForm profId cId
@@ -69,6 +70,7 @@ postCourseR profName progSlug course = do
     cId <- case mCourse of
         Just (Entity cId _) -> return cId
         Nothing -> notFound
+    articles <- runDB $ selectList [ArticleCourseId ==. cId] []
     case mProfileOwner of 
         Just (Entity profId _) -> do
             ((res, formWidget), formEnctype) <- runFormPost $ renderBootstrap3 BootstrapBasicForm
