@@ -3,11 +3,8 @@
 
     <!-- Private -->   
     $maybe (Entity _ profile) <- mProfileOwner
-        <form method=post>
-    <!-- form
         $maybe (formWidget, formEnctype) <- mForm
-            <form method=post action=@{ProgramR (profileName profile) progSlug} enctype=#{formEnctype}>
+            <form method=post action=@{CourseR (profileName profile) progSlug course} enctype=#{formEnctype}>
                 ^{formWidget}
                 <button .btn.btn-primary type="submit">
                     Save!
-    -->

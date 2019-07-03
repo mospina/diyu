@@ -47,6 +47,50 @@ spec = withApp $ do
             statusIs 200
             bodyContains "form"
 
---    describe "postCourseR" $ do
---        error "Spec not implemented: postCourseR"
---
+    describe "postCourseR" $ do
+        it "gives unauthorized access to anonymous users" $ do
+            userEntity <- createUser "foo"
+            profileEntity <- createProfile userEntity "foo"
+            programEntity <- createProgram profileEntity "Computer Science" "computer-science"
+            _todoCourse <- createCourse programEntity "How to Code" "how-to-code" Todo
+
+            post $ CourseR "foo" "computer-science" "how-to-code"
+
+            statusIs 403
+
+        it "gives unauthorized access to users that don't own the profile" $ do
+            ownerEntity <- createUser "foo"
+            ownerProfile <- createProfile ownerEntity "foo"
+            ownerProgram <- createProgram ownerProfile "Computer Science" "computer-science"
+            _todoCourse <- createCourse ownerProgram "How to Code" "how-to-code" Todo
+
+            userEntity <- createUser "bar"
+            _ <- createProfile userEntity "bar"
+            authenticateAs userEntity
+
+            post $ CourseR "foo" "computer-science" "how-to-code"
+
+            statusIs 403
+
+        it "process form properly" $ do
+            ownerEntity <- createUser "foo"
+            ownerProfile <- createProfile ownerEntity "foo"
+            ownerProgram <- createProgram ownerProfile "Computer Science" "computer-science"
+            _todoCourse <- createCourse ownerProgram "How to Code" "how-to-code" Todo
+            authenticateAs ownerEntity
+
+            get $ CourseR "foo" "computer-science" "how-to-code"
+            statusIs 200
+
+            request $ do
+                setMethod "POST"
+                setUrl $ CourseR "foo" "computer-science" "how-to-code"
+                addToken
+                byLabelContain "Title" "Why Computer Science"
+                byLabelContain "Slug" "why-computer-science"
+                byLabelContain "Body" "# Why Computer Science"
+
+            statusIs 303
+            _ <- followRedirect
+
+            htmlAnyContain ".article-item" "Why Computer Science"
