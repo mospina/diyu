@@ -174,6 +174,7 @@ instance Yesod App where
     isAuthorized (ProgramsR _) False = return Authorized
     isAuthorized (ProgramR _ _) False = return Authorized
     isAuthorized (CourseR _ _ _) False = return Authorized
+    isAuthorized (ArticleR _ _ _ _) _ = return Authorized
     isAuthorized HomeR _ = return Authorized
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
