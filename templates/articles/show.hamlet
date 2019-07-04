@@ -1,0 +1,6 @@
+<div .ui.container>
+    <h1>#{articleTitle article}
+    
+    <p>
+        #{articleBody article}
+
