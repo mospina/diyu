@@ -1,0 +1,25 @@
+@red: #ffb8bf
+@yellow: #ffd8b8 
+@green: #bcffb8
+@navbar_color: #8b7d7b   
+
+.row
+  display: flex
+  flex-wrap: wrap
+  > [class*='col-']
+    display: flex
+    flex-direction: column
+
+.course-item
+  border: 0.1rem solid #{navbar_color}
+  padding: 1rem
+  margin-bottom: 0.5rem
+
+.todo
+  border: 1px solid #{red}
+
+.doing
+  border: 1px solid #{yellow}
+
+.done 
+  border: 1px solid #{green}

@@ -1,56 +1,62 @@
 <div .ui.container>
 
     <h1>
-        Program
+        #{progSlug}
 
     $if null courses
         <p>There is not courses for this program
     $else
-        <div .course-list>
-            <div .todo>
+        <div .row.course-list>
+            <div .col-md-4.todo>
+                <h2>To do
                 $forall Entity _ course <- filterCourses courses Todo
-                    <div .course-item>
-                        <h2>
+                    <div .card.course-item>
+                      <div .card-body>
+                        <h3 .card-title>
                             #{courseName course}
-                        <p>
-                            <a href="@{CourseR profile progSlug (courseSlug course)}">
-                                See course
 
                         $maybe url <- courseUrl course
-                            <p>#{url}
+                            <p .card-text>#{url}
 
                         $maybe description <- courseDescription course
-                            <p>#{description}
+                            <p .card-text>#{description}
+                        <p>
+                            <a href="@{CourseR profile progSlug (courseSlug course)}" .btn.btn-primary>
+                                See course
 
-            <div .doing>
+            <div .col-md-4.doing>
+                <h2>Doing
                 $forall Entity _ course <- filterCourses courses Doing
-                    <div .course-item>
-                        <h2>
+                    <div .card.course-item>
+                      <div .card-body>
+                        <h3 .card-title>
                             #{courseName course}
-                        <p>
-                            <a href="@{CourseR profile progSlug (courseSlug course)}">
-                                See course
 
                         $maybe url <- courseUrl course
-                            <p>#{url}
+                            <p .card-text>#{url}
 
                         $maybe description <- courseDescription course
-                            <p>#{description}
+                            <p .card-text>#{description}
+                        <p>
+                            <a href="@{CourseR profile progSlug (courseSlug course)}" .btn.btn-primary>
+                                See course
 
-            <div .done>
+            <div .col-md-4.done>
+                <h2>Done
                 $forall Entity _ course <- filterCourses courses Done
-                    <div .course-item>
-                        <h2>
+                    <div .card.course-item>
+                      <div .card-body>
+                        <h3 .card-title>
                             #{courseName course}
-                        <p>
-                            <a href="@{CourseR profile progSlug (courseSlug course)}">
-                                See course
 
                         $maybe url <- courseUrl course
-                            <p>#{url}
+                            <p .card-text>#{url}
 
                         $maybe description <- courseDescription course
-                            <p>#{description}
+                            <p .card-text>#{description}
+                        <p>
+                            <a href="@{CourseR profile progSlug (courseSlug course)}" .btn.btn-primary>
+                                See course
 
     $maybe (Entity _ profile) <- mProfileOwner
         $maybe (formWidget, formEnctype) <- mForm
