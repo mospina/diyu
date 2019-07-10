@@ -11,15 +11,19 @@
     flex-direction: column
 
 .course-item
-  border: 0.1rem solid #{navbar_color}
   padding: 1rem
   margin-bottom: 0.5rem
+  border-radius: 5px
+  box-shadow: -20px 20px 20px -20px #{navbar_color}
 
 .todo
-  border: 1px solid #{red}
+  border-radius: 5px
+  box-shadow: -20px 20px 20px -20px #{red}
 
 .doing
-  border: 1px solid #{yellow}
+  border-radius: 5px
+  box-shadow: -20px 20px 20px -20px #{yellow}
 
 .done 
-  border: 1px solid #{green}
+  border-radius: 5px
+  box-shadow: -20px 20px 20px -20px #{green}

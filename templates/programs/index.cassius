@@ -1,0 +1,8 @@
+@navbar_color: #8b7d7b   
+
+.card
+    padding: 1rem
+    border-radius: 5px
+    box-shadow: -20px 20px 20px -20px #{navbar_color}
+
+
