@@ -1,6 +1,16 @@
 <div .ui.container>
-    <h1>#{course}
-
+    $maybe (Entity _ theCourse) <- mCourse
+      <h1>#{courseName theCourse}
+      $maybe description <- courseDescription theCourse
+        <p .card-text>#{description}
+      $maybe url <- courseUrl theCourse
+        <p .card-text>
+          <a href="#{url}">
+            Go to course provider
+    $nothing
+      <h1>#{course}
+    
+    <h2>Articles
     $if null articles
         <p>There is no articles for this course.
     $else
@@ -8,7 +18,7 @@
             $forall Entity _ article <- articles
                 <div .card.article-item>
                   <div .card-body>
-                    <h2 .card-title>#{articleTitle article}
+                    <h3 .card-title>#{articleTitle article}
                     <!-- p .card-text>
                       #{take 150 $ show (articleBody article)}
                     -->

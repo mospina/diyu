@@ -16,7 +16,9 @@
                             #{courseName course}
 
                         $maybe url <- courseUrl course
-                            <p .card-text>#{url}
+                            <p .card-text>
+                                <a href="#{url}">
+                                    Go to course provider
 
                         $maybe description <- courseDescription course
                             <p .card-text>#{description}
@@ -33,7 +35,9 @@
                             #{courseName course}
 
                         $maybe url <- courseUrl course
-                            <p .card-text>#{url}
+                            <p .card-text>
+                                <a href="#{url}">
+                                    Go to course provider
 
                         $maybe description <- courseDescription course
                             <p .card-text>#{description}
@@ -50,7 +54,9 @@
                             #{courseName course}
 
                         $maybe url <- courseUrl course
-                            <p .card-text>#{url}
+                            <p .card-text>
+                                <a href="#{url}">
+                                    Go to course provider
 
                         $maybe description <- courseDescription course
                             <p .card-text>#{description}
