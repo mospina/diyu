@@ -39,7 +39,7 @@ Article
     body Markdown
     courseId CourseId
     profileId ProfileId
-    deriving Typeable
+    deriving Typeable Show Eq
 
 Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived.
     message Text

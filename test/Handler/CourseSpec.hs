@@ -4,6 +4,7 @@ module Handler.CourseSpec (spec) where
 
 import TestImport
 import Progress
+import qualified Handler.Course as C
 
 spec :: Spec
 spec = withApp $ do
@@ -94,3 +95,20 @@ spec = withApp $ do
             _ <- followRedirect
 
             htmlAnyContain ".article-item" "Why Computer Science"
+
+    describe "createArticleBrief" $ do
+        it "creates the brief for a given article" $ do
+            ownerEntity <- createUser "foo"
+            ownerProfile <- createProfile ownerEntity "foo"
+            ownerProgram <- createProgram ownerProfile "Computer Science" "computer-science"
+            ownerCourse <- createCourse ownerProgram "How to Code" "how-to-code" Todo
+            (Entity _ ownerArticle) <- createArticle ownerCourse "Programming notes" "prog-notes"
+
+            articleBrief <- runHandler $ C.createArticleBrief ownerArticle
+            assertEq "Article is in articleBrief" (C.article articleBrief) ownerArticle
+            assertEq "Url is in articleBrief" 
+                     (C.url articleBrief)
+                     (ArticleR "foo" "computer-science" "how-to-code" "prog-notes")
+            assertEq "Brief is in articleBrief" 
+                     (C.brief articleBrief)
+                     ("Mardown text")

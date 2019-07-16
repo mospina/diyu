@@ -98,3 +98,94 @@ maybeCourse profName progSlug course = runDB $ do
                 Just (Entity progId _) -> selectFirst [CourseProfileId ==. pId, CourseProgramId ==. progId, CourseSlug ==. course] []
                 Nothing -> return Nothing
         Nothing -> return Nothing
+
+data ArticleBrief = ArticleBrief { article :: Article
+                                 , url :: Route App
+                                 , brief :: Text   
+                                 }
+
+{--
+ - ArticleBrief is: ArticleBrief Article Text (Maybe Text)
+ -   interp. An article with a url and a brief description
+ -
+ - brief = ArticleBrief { article=article,
+ -                      , url=ArticleR "mospina" "cs" "htc1" "intro"
+ -                      , brief=""
+ -                      }
+ -
+ - fnForArticleBrief :: ArticleBrief -> ...
+ - fnForArticleBrief ab =
+ -   ... (fnForArticle $ article ab)     ;Article
+ -       (fnForRoute $ url  ab)          ;Route
+ -       (brief ab)
+ -
+ -- Template rules used:
+ -   - compound: 3 fields
+ -     - article: reference Article
+ -     - url: reference Route App 
+ -     - brief Atomic
+ ---------------------------
+ - Article is: Article { title=Text, slug=Text, body=Markdown, courseId=CourseId, profileId=ProfileId}
+ -  interp. An article with title, slug body that belongs to courseId and profileId
+ -
+ - fnForArticle :: Article -> ...
+ - fnForArticle article =
+ -  ... (articleTitle article)
+ -      (articleSlug  article)
+ -      (fnForMarkdown (articleBody article))
+ -      (fnForCourse (articleCourseId article))
+ -      (fnForProfile (articleprofileId article))
+ -
+ - fnForListOfArticles :: [Article] -> ...
+ - fnForListOfArticles [] = []
+ - fnForListOfArticles (first:rest) = fnForArticle first : fnForListOfArticles rest
+ ------------------------------
+ - Profile is: Profile {name=Text, userId=UserId}
+ -  interp. A user profile with name that belongs to userId
+ -
+ - fnForProfile :: Profile -> ...
+ - fnForProfile profile = 
+ -  ... (profileName profile)
+ -      (fnForUser $ profileUserId profile)
+--} 
+      
+-- Return a widget with the given list of articles
+generateArticleWidget :: [Entity Article] -> WidgetFor site ()
+generateArticleWidget articles = do $(widgetFile "articles/article")
+
+-- Return a article brief for the given Article.
+createArticleBrief :: Article -> Handler ArticleBrief
+createArticleBrief article = do
+    mProfile <- runDB $ get $ articleProfileId article
+    profName <- case mProfile of
+        Nothing -> return ""
+        Just profile -> return $ profileName profile
+    mcourse <- runDB $ get $ articleCourseId article
+    (progSlug, cSlug) <- case mcourse of
+        Nothing -> return ("", "")
+        Just course -> do 
+            mprogram <- runDB $ get $ courseProgramId course
+            case mprogram of
+                Nothing -> return ("", "")
+                Just program -> return $ (programSlug program, courseSlug course)       
+    let brief = fromString . take 150 $ show (articleBody article)
+    return ArticleBrief { article=article
+                        , url=ArticleR profName progSlug cSlug (articleSlug article)
+                        , brief=brief 
+                        }
+{--                                          
+fnForProfile profileId = Text
+  ... (profileName profile)
+      (fnForUser $ profileUserId profile)
+
+fnForArticle :: Article -> ...
+fnForArticle article =
+    ArticleBrief { article=article
+                 , url= ArticleR (fnForProfile (articleprofileId article))
+                                 ...
+                                 (fnForCourse (articleCourseId article))
+                                 (articleSlug  article)
+                 , brief=(fnForMarkdown (articleBody article))
+                 } 
+--}
+
