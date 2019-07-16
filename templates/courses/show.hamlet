@@ -9,7 +9,7 @@
             Go to course provider
     $nothing
       <h1>#{course}
-    
+
     <h2>Articles
     $if null articles
         <p>There is no articles for this course.
@@ -25,8 +25,8 @@
                     <p>
                       <a href="@{ArticleR profName progSlug course (articleSlug article)}" .btn.btn-primary>
                         Read Article
-                        
-    <!-- Private -->   
+
+    <!-- Private -->
     $maybe (Entity _ profile) <- mProfileOwner
         $maybe (formWidget, formEnctype) <- mForm
             <form method=post action=@{CourseR (profileName profile) progSlug course} enctype=#{formEnctype}>
