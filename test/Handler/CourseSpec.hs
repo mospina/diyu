@@ -109,6 +109,3 @@ spec = withApp $ do
             assertEq "Url is in articleBrief" 
                      (C.url articleBrief)
                      (ArticleR "foo" "computer-science" "how-to-code" "prog-notes")
-            assertEq "Brief is in articleBrief" 
-                     (C.brief articleBrief)
-                     ("Mardown text")

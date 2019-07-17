@@ -1,16 +1,15 @@
-$if null articles
+$if null articleBriefs
     <p>There is no articles for this course.
 $else
     <div .article-list>
-        $forall Entity _ article <- articles
+        $forall ArticleBrief article articleUrl <- articleBriefs
             <div .card.article-item>
               <div .card-body>
                 <h3 .card-title>#{articleTitle article}
                 <!-- p .card-text>
                   #{take 150 $ show (articleBody article)}
                 -->
-                <!-- p>
-                  <a href="@{ArticleR profName progSlug course (articleSlug article)}" .btn.btn-primary>
+                <p>
+                  <a href="@{articleUrl}" .btn.btn-primary>
                     Read Article
-                -->
 

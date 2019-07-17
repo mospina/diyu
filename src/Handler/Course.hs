@@ -52,7 +52,8 @@ getCourseR profName progSlug course = do
     cId <- case mCourse of
         Just (Entity cId _) -> return cId
         Nothing -> notFound
-    articles <- runDB $ selectList [ArticleCourseId ==. cId] []
+    articleList <- runDB $ selectList [ArticleCourseId ==. cId] []
+    articles <- widgetToPageContent $ generateArticleWidget articleList
     mForm <- case mProfileOwner of 
         Just (Entity profId _) -> do
             form <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ articleForm profId cId
@@ -70,7 +71,8 @@ postCourseR profName progSlug course = do
     cId <- case mCourse of
         Just (Entity cId _) -> return cId
         Nothing -> notFound
-    articles <- runDB $ selectList [ArticleCourseId ==. cId] []
+    articleList <- runDB $ selectList [ArticleCourseId ==. cId] []
+    articles <- widgetToPageContent $ generateArticleWidget articleList
     case mProfileOwner of 
         Just (Entity profId _) -> do
             ((res, formWidget), formEnctype) <- runFormPost $ renderBootstrap3 BootstrapBasicForm
@@ -101,29 +103,25 @@ maybeCourse profName progSlug course = runDB $ do
 
 data ArticleBrief = ArticleBrief { article :: Article
                                  , url :: Route App
-                                 , brief :: Text   
                                  }
 
 {--
  - ArticleBrief is: ArticleBrief Article Text (Maybe Text)
- -   interp. An article with a url and a brief description
+ -   interp. An article with a url
  -
  - brief = ArticleBrief { article=article,
  -                      , url=ArticleR "mospina" "cs" "htc1" "intro"
- -                      , brief=""
  -                      }
  -
  - fnForArticleBrief :: ArticleBrief -> ...
  - fnForArticleBrief ab =
  -   ... (fnForArticle $ article ab)     ;Article
  -       (fnForRoute $ url  ab)          ;Route
- -       (brief ab)
  -
  -- Template rules used:
- -   - compound: 3 fields
+ -   - compound: 2 fields
  -     - article: reference Article
  -     - url: reference Route App 
- -     - brief Atomic
  ---------------------------
  - Article is: Article { title=Text, slug=Text, body=Markdown, courseId=CourseId, profileId=ProfileId}
  -  interp. An article with title, slug body that belongs to courseId and profileId
@@ -150,8 +148,10 @@ data ArticleBrief = ArticleBrief { article :: Article
 --} 
       
 -- Return a widget with the given list of articles
-generateArticleWidget :: [Entity Article] -> WidgetFor site ()
-generateArticleWidget articles = do $(widgetFile "articles/article")
+generateArticleWidget :: [Entity Article] -> Widget
+generateArticleWidget articles = do 
+    articleBriefs <- handlerToWidget $ mapM (\(Entity _ a)->createArticleBrief a) articles
+    $(widgetFile "articles/article")
 
 -- Return a article brief for the given Article.
 createArticleBrief :: Article -> Handler ArticleBrief
@@ -168,10 +168,8 @@ createArticleBrief article = do
             case mprogram of
                 Nothing -> return ("", "")
                 Just program -> return $ (programSlug program, courseSlug course)       
-    let brief = fromString . take 150 $ show (articleBody article)
     return ArticleBrief { article=article
                         , url=ArticleR profName progSlug cSlug (articleSlug article)
-                        , brief=brief 
                         }
 {--                                          
 fnForProfile profileId = Text

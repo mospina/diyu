@@ -11,20 +11,7 @@
       <h1>#{course}
 
     <h2>Articles
-    $if null articles
-        <p>There is no articles for this course.
-    $else
-        <div .article-list>
-            $forall Entity _ article <- articles
-                <div .card.article-item>
-                  <div .card-body>
-                    <h3 .card-title>#{articleTitle article}
-                    <!-- p .card-text>
-                      #{take 150 $ show (articleBody article)}
-                    -->
-                    <p>
-                      <a href="@{ArticleR profName progSlug course (articleSlug article)}" .btn.btn-primary>
-                        Read Article
+        ^{pageBody articles}
 
     <!-- Private -->
     $maybe (Entity _ profile) <- mProfileOwner
