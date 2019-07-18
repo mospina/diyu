@@ -203,48 +203,6 @@ data ArticleBrief = ArticleBrief { article :: Article
                                  , url :: Route App
                                  }
 
-{--
- - ArticleBrief is: ArticleBrief Article Text (Maybe Text)
- -   interp. An article with a url
- -
- - brief = ArticleBrief { article=article,
- -                      , url=ArticleR "mospina" "cs" "htc1" "intro"
- -                      }
- -
- - fnForArticleBrief :: ArticleBrief -> ...
- - fnForArticleBrief ab =
- -   ... (fnForArticle $ article ab)     ;Article
- -       (fnForRoute $ url  ab)          ;Route
- -
- -- Template rules used:
- -   - compound: 2 fields
- -     - article: reference Article
- -     - url: reference Route App 
- ---------------------------
- - Article is: Article { title=Text, slug=Text, body=Markdown, courseId=CourseId, profileId=ProfileId}
- -  interp. An article with title, slug body that belongs to courseId and profileId
- -
- - fnForArticle :: Article -> ...
- - fnForArticle article =
- -  ... (articleTitle article)
- -      (articleSlug  article)
- -      (fnForMarkdown (articleBody article))
- -      (fnForCourse (articleCourseId article))
- -      (fnForProfile (articleprofileId article))
- -
- - fnForListOfArticles :: [Article] -> ...
- - fnForListOfArticles [] = []
- - fnForListOfArticles (first:rest) = fnForArticle first : fnForListOfArticles rest
- ------------------------------
- - Profile is: Profile {name=Text, userId=UserId}
- -  interp. A user profile with name that belongs to userId
- -
- - fnForProfile :: Profile -> ...
- - fnForProfile profile = 
- -  ... (profileName profile)
- -      (fnForUser $ profileUserId profile)
---} 
-      
 -- Return a widget with the given list of articles
 generateArticleWidget :: [Entity Article] -> Widget
 generateArticleWidget articles = do 
@@ -269,19 +227,4 @@ createArticleBrief article = do
     return ArticleBrief { article=article
                         , url=ArticleR profName progSlug cSlug (articleSlug article)
                         }
-{--                                          
-fnForProfile profileId = Text
-  ... (profileName profile)
-      (fnForUser $ profileUserId profile)
-
-fnForArticle :: Article -> ...
-fnForArticle article =
-    ArticleBrief { article=article
-                 , url= ArticleR (fnForProfile (articleprofileId article))
-                                 ...
-                                 (fnForCourse (articleCourseId article))
-                                 (articleSlug  article)
-                 , brief=(fnForMarkdown (articleBody article))
-                 } 
---}
 
