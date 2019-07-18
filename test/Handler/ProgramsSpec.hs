@@ -39,6 +39,18 @@ spec = withApp $ do
 
             statusIs 200
             bodyContains "form"
+    
+        it "shows list of articles" $ do
+            ownerEntity <- createUser "foo"
+            ownerProfile <- createProfile ownerEntity "foo"
+            ownerProgram <- createProgram ownerProfile "Computer Science" "computer-science"
+            ownerCourse <- createCourse ownerProgram "How to Code" "how-to-code" Todo
+            _ <- createArticle ownerCourse "Programming notes" "prog-notes"
+
+            get $ ProgramsR "foo"
+
+            statusIs 200
+            htmlAnyContain ".article-item" "Programming notes"
 
 
     describe "postProgramsR" $ do
@@ -189,6 +201,19 @@ spec = withApp $ do
 
             statusIs 200
             bodyContains "form"
+
+        it "shows list of articles" $ do
+            ownerEntity <- createUser "foo"
+            ownerProfile <- createProfile ownerEntity "foo"
+            ownerProgram <- createProgram ownerProfile "Computer Science" "computer-science"
+            ownerCourse <- createCourse ownerProgram "How to Code" "how-to-code" Todo
+            _ <- createArticle ownerCourse "Programming notes" "prog-notes"
+
+            get $ ProgramR "foo" "computer-science"
+
+            statusIs 200
+            htmlAnyContain ".article-item" "Programming notes"
+
 
     describe "postProgramR" $ do
         it "gives unauthorized response to anonymous users" $ do

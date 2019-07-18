@@ -70,3 +70,6 @@
                 ^{formWidget}
                 <button .btn.btn-primary type="submit">
                     Save!
+
+    <h2>Articles
+        ^{pageBody articles}

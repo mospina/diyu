@@ -4,7 +4,7 @@ module Handler.CourseSpec (spec) where
 
 import TestImport
 import Progress
-import qualified Handler.Course as C
+import qualified Handler.Programs as P
 
 spec :: Spec
 spec = withApp $ do
@@ -104,8 +104,8 @@ spec = withApp $ do
             ownerCourse <- createCourse ownerProgram "How to Code" "how-to-code" Todo
             (Entity _ ownerArticle) <- createArticle ownerCourse "Programming notes" "prog-notes"
 
-            articleBrief <- runHandler $ C.createArticleBrief ownerArticle
-            assertEq "Article is in articleBrief" (C.article articleBrief) ownerArticle
+            articleBrief <- runHandler $ P.createArticleBrief ownerArticle
+            assertEq "Article is in articleBrief" (P.article articleBrief) ownerArticle
             assertEq "Url is in articleBrief" 
-                     (C.url articleBrief)
+                     (P.url articleBrief)
                      (ArticleR "foo" "computer-science" "how-to-code" "prog-notes")
