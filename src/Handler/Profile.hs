@@ -20,6 +20,8 @@ profileForm userId = Profile
     <$> areq uniqueProfileNameField (bfs ("Profile Name" :: Text)) Nothing
     <*> pure userId
   where
+    reservedWords = ["profile", "api", "dashboard", "programs", "courses", "articles", "multilada", "diyu"]
+
     errorMessage :: Text
     errorMessage = "Profile name already used"   
 
@@ -29,12 +31,12 @@ profileForm userId = Profile
         check validateNonReserved textField
 
     validateNonReserved y
-        | elem y ["profile"] = Left errorMessage
+        | elem (toLower y) reservedWords = Left errorMessage
         | otherwise = Right y
 
     validateUniqueName :: Text -> Handler (Either Text Text)
     validateUniqueName y = do 
-        mProfile <- runDB $ getBy $ UniqueName y
+        mProfile <- runDB $ getBy $ UniqueName (toLower y)
         case mProfile of
             Just _ -> return $ Left errorMessage
             Nothing -> return $ Right y
