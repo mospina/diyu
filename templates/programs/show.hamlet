@@ -72,4 +72,5 @@
                     Save!
 
     <h2>Articles
-        ^{pageBody articles}
+    <div .article-list>
+      ^{pageBody articles}

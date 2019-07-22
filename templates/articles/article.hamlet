@@ -1,15 +1,11 @@
 $if null articleBriefs
     <p>There is no articles for this course.
 $else
-    <div .article-list>
-        $forall ArticleBrief article articleUrl <- articleBriefs
-            <div .card.article-item>
-              <div .card-body>
-                <h3 .card-title>#{articleTitle article}
-                $maybe snippet <- articleSnippet article    
-                    <p .card-text.article-snippet>
-                        <small>#{snippet}
-                <p .card-text>
-                  <a href="@{articleUrl}" .btn.btn-primary>
-                    Read Article
-
+    $forall ArticleBrief article articleUrl <- articleBriefs
+        <div .article-item>
+            <h3 .article-title>#{articleTitle article}
+            $maybe snippet <- articleSnippet article    
+                <p .article-snippet>
+                  #{snippet}
+            <a href="@{articleUrl}" .btn.btn-primary>
+                Read Article

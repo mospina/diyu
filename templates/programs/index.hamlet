@@ -27,4 +27,5 @@
                     Save!
 
     <h2>Latest articles
+    <div .article-list>
         ^{pageBody articles}

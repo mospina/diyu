@@ -11,6 +11,7 @@
       <h1>#{course}
 
     <h2>Articles
+    <div .article-list>
         ^{pageBody articles}
 
     <!-- Private -->
