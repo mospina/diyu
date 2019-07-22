@@ -234,6 +234,14 @@ instance YesodBreadcrumbs App where
     breadcrumb HomeR = return ("Home", Nothing)
     breadcrumb (AuthR _) = return ("Login", Just HomeR)
     breadcrumb ProfileR = return ("Profile", Just HomeR)
+    breadcrumb (ProgramsR _) = return ("Programs", Just HomeR)
+    breadcrumb (ProgramR profName _) = return ("Courses", 
+                                              
+                                               Just (ProgramsR profName))
+    breadcrumb (CourseR profName progSlug _) = return ("Course description",
+                                                         Just (ProgramR profName progSlug))
+    breadcrumb (ArticleR profName progSlug cSlug aSlug) = return (aSlug,
+                                                         Just (CourseR profName progSlug cSlug))
     breadcrumb  _ = return ("home", Nothing)
 
 -- How to run database actions.
