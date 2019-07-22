@@ -9,6 +9,7 @@ import Import
 import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3, bfs)
 import Yesod.Text.Markdown
 import Data.Char (isAlphaNum)
+import Data.Time
 import Handler.Programs (maybeProfileOwner, generateArticleWidget)
 
 --------------------------------------------------------------------------------
@@ -18,6 +19,8 @@ articleForm profileId courseId = Article
     <$> areq textField (bfs ("Title" :: Text)) Nothing
     <*> areq uniqueSlugField (bfs ("Slug" :: Text)) Nothing
     <*> areq markdownField (bfs ("Body" :: Text)) Nothing
+    <*> aopt textField (bfs ("Snippet" :: Text)) Nothing
+    <*> lift (liftIO getCurrentTime)
     <*> pure courseId
     <*> pure profileId
   where

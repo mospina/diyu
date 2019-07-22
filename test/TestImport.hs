@@ -18,6 +18,7 @@ import Yesod.Default.Config2 (useEnv, loadYamlSettings)
 import Yesod.Auth            as X
 import Yesod.Test            as X
 import Yesod.Core.Unsafe     (fakeHandlerGetLogger)
+import Data.Time
 import Progress
 
 runDB :: SqlPersistM a -> YesodExample App a
@@ -127,10 +128,13 @@ createCourse progEntity name slug progress = runDB $ do
 createArticle :: (Entity Course) -> Text -> Text -> YesodExample App (Entity Article)
 createArticle courseEntity title slug = runDB $ do
     let (Entity cId course) = courseEntity
+    currentTime <- lift (liftIO getCurrentTime)
     article <- insertEntity Article
         { articleTitle = title
         , articleSlug = slug
         , articleBody = "# Markdown text"
+        , articleSnippet = Just "A snippet"
+        , articlePublishedAt = currentTime
         , articleCourseId = cId
         , articleProfileId = courseProfileId course
         }

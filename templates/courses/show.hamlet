@@ -2,9 +2,9 @@
     $maybe (Entity _ theCourse) <- mCourse
       <h1>#{courseName theCourse}
       $maybe description <- courseDescription theCourse
-        <p .card-text>#{description}
+        <p>#{description}
       $maybe url <- courseUrl theCourse
-        <p .card-text>
+        <p>
           <a href="#{url}">
             Go to course provider
     $nothing

@@ -6,10 +6,10 @@ $else
             <div .card.article-item>
               <div .card-body>
                 <h3 .card-title>#{articleTitle article}
-                <!-- p .card-text>
-                  #{take 150 $ show (articleBody article)}
-                -->
-                <p>
+                $maybe snippet <- articleSnippet article    
+                    <p .card-text.article-snippet>
+                        <small>#{snippet}
+                <p .card-text>
                   <a href="@{articleUrl}" .btn.btn-primary>
                     Read Article
 

@@ -37,6 +37,8 @@ Article
     title Text
     slug Text
     body Markdown
+    snippet Text Maybe
+    publishedAt UTCTime default=CURRENT_TIMESTAMP
     courseId CourseId
     profileId ProfileId
     deriving Typeable Show Eq
